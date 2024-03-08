@@ -4,8 +4,8 @@ import ProductAutocomplete from './ProductAutoComplete';
 const InvoiceForm = () => {
     const [invoiceData, setInvoiceData] = useState({
         date: '',
-        customerName: '',
-        salespersonName: '',
+        customer: '',
+        salesperson: '',
         notes: '',
         products: [],
     });
@@ -51,7 +51,7 @@ const InvoiceForm = () => {
         setIsValid(true);
 
         try {
-            const apiUrl = 'https://api.example.com/invoices';
+            const apiUrl = 'http://localhost:3000/invoices';
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -85,8 +85,8 @@ const InvoiceForm = () => {
         // Check for empty input fields
         return (
             invoiceData.date.trim() !== '' &&
-            invoiceData.customerName.trim() !== '' &&
-            invoiceData.salespersonName.trim() !== '' &&
+            invoiceData.customer.trim() !== '' &&
+            invoiceData.salesperson.trim() !== '' &&
             invoiceData.products.length > 0
         );
     };
@@ -110,8 +110,8 @@ const InvoiceForm = () => {
                         <label className="block text-sm font-semibold">Customer Name:</label>
                         <input
                             type="text"
-                            name="customerName"
-                            value={invoiceData.customerName}
+                            name="customer"
+                            value={invoiceData.customer}
                             onChange={handleInputChange}
                             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                         />
@@ -121,8 +121,8 @@ const InvoiceForm = () => {
                         <label className="block text-sm font-semibold">Salesperson Name:</label>
                         <input
                             type="text"
-                            name="salespersonName"
-                            value={invoiceData.salespersonName}
+                            name="salesperson"
+                            value={invoiceData.salesperson}
                             onChange={handleInputChange}
                             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                         />
