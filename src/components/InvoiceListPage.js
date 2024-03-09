@@ -14,7 +14,7 @@ const InvoiceListPage = () => {
         // Fetch invoices using GET API
         const fetchInvoices = async () => {
             try {
-                const apiUrl = `http://localhost:3000/invoices?page=${currentPage}&pageSize=${invoicesPerPage}`;
+                const apiUrl = `http://localhost:2828/invoices?page=${currentPage}&pageSize=${invoicesPerPage}`;
                 const response = await fetch(apiUrl);
                 const data = await response.json();
                 setInvoices(data.data);

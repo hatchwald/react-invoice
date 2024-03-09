@@ -66,7 +66,7 @@ const InvoiceForm = () => {
         setIsValid(true);
 
         try {
-            const apiUrl = 'http://localhost:3000/invoices';
+            const apiUrl = 'http://localhost:2828/invoices';
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
