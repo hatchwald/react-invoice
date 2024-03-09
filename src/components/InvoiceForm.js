@@ -11,10 +11,9 @@ const InvoiceForm = () => {
     });
 
     const productsData = [
-        { id: 1, name: 'Product 1', stock: 10, price: 20 },
-        { id: 2, name: 'Product 2', stock: 5, price: 15 },
+        { id: 1, name: 'Product 1', stock: 10, price: 20, image: 'https://picsum.photos/50' },
+        { id: 2, name: 'Product 2', stock: 5, price: 15, image: 'https://picsum.photos/50' },
     ];
-
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isValid, setIsValid] = useState(true);
 
@@ -31,9 +30,25 @@ const InvoiceForm = () => {
         if (!isProductSelected) {
             setInvoiceData((prevData) => ({
                 ...prevData,
-                products: [...prevData.products, selectedProduct],
+                products: [...prevData.products, { ...selectedProduct, quantity: 1 }],
             }));
         }
+    };
+
+    const handleQuantityChange = (productId, newQuantity) => {
+        setInvoiceData((prevData) => ({
+            ...prevData,
+            products: prevData.products.map((product) =>
+                product.id === productId ? { ...product, quantity: newQuantity } : product
+            ),
+        }));
+    };
+
+    const handleRemoveProduct = (productId) => {
+        setInvoiceData((prevData) => ({
+            ...prevData,
+            products: prevData.products.filter((product) => product.id !== productId),
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -75,19 +90,18 @@ const InvoiceForm = () => {
             }
         } catch (error) {
             console.error('Error submitting invoice:', error);
-            alert("error submit")
         } finally {
             setIsSubmitting(false);
         }
     };
 
     const validateForm = () => {
-        // Check for empty input fields
         return (
             invoiceData.date.trim() !== '' &&
             invoiceData.customer.trim() !== '' &&
             invoiceData.salesperson.trim() !== '' &&
-            invoiceData.products.length > 0
+            invoiceData.products.length > 0 &&
+            invoiceData.products.every((product) => product.quantity > 0)
         );
     };
 
@@ -146,9 +160,32 @@ const InvoiceForm = () => {
                 <div className="mt-4">
                     <h3 className="text-lg font-semibold mb-2">Selected Products:</h3>
                     <ul>
-                        {invoiceData.products.map((product, index) => (
-                            <li key={index} className="mb-1">
-                                {product.name} - Stock: {product.stock} - Price: {product.price}
+                        {invoiceData.products.map((product) => (
+                            <li key={product.id} className="flex items-center justify-between mb-2">
+                                <div className="flex items-center space-x-2">
+                                    <img
+                                        src={product.image}
+                                        alt={product.name}
+                                        className="w-8 h-8 object-cover rounded-md"
+                                    />
+                                    <span>{product.name}</span>
+                                    <span>Rp. {product.price}</span>
+                                </div>
+                                <div>
+                                    <input
+                                        type="number"
+                                        value={product.quantity}
+                                        onChange={(e) => handleQuantityChange(product.id, e.target.value)}
+                                        className="w-16 p-2 border border-gray-300 rounded-md text-center"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveProduct(product.id)}
+                                        className="ml-2 p-2 text-red-500"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
                             </li>
                         ))}
                     </ul>
@@ -157,7 +194,7 @@ const InvoiceForm = () => {
                 {/* Show warning message for invalid inputs */}
                 {!isValid && (
                     <p className="text-red-500 text-sm mt-2">
-                        Please fill in all required fields before submitting.
+                        Please fill in all required fields and ensure quantity is greater than 0.
                     </p>
                 )}
 
