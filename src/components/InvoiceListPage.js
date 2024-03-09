@@ -7,6 +7,7 @@ const InvoiceListPage = () => {
     const [invoices, setInvoices] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [invoicesPerPage, setInvoicesPerPage] = useState(5);
+    const [totalPage, setTotalPage] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,7 +17,8 @@ const InvoiceListPage = () => {
                 const apiUrl = `http://localhost:3000/invoices?page=${currentPage}&pageSize=${invoicesPerPage}`;
                 const response = await fetch(apiUrl);
                 const data = await response.json();
-                setInvoices(data);
+                setInvoices(data.data);
+                setTotalPage(data.totalPage)
             } catch (error) {
                 console.error('Error fetching invoices:', error);
             }
@@ -25,7 +27,6 @@ const InvoiceListPage = () => {
         fetchInvoices();
     }, [currentPage, invoicesPerPage]);
 
-    const totalPages = Math.ceil(invoices.length / invoicesPerPage);
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
@@ -53,8 +54,8 @@ const InvoiceListPage = () => {
                     </select>
                 </div>
                 <div>
-                    <span className="mr-2">Page {currentPage} of {totalPages}</span>
-                    {Array.from({ length: totalPages }, (_, index) => (
+                    <span className="mr-2">Page {currentPage} of {totalPage}</span>
+                    {Array.from({ length: totalPage }, (_, index) => (
                         <button
                             key={index + 1}
                             onClick={() => handlePageChange(index + 1)}
